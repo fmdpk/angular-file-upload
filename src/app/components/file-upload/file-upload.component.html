@@ -1,0 +1,77 @@
+<div class="file-upload-container">
+  <h2>File Upload with Drag & Drop</h2>
+  <div
+    class="drop-zone"
+    appDragDrop
+    (filesDropped)="onFilesDropped($event)"
+    (filesHovered)="toggleHover($event)"
+    [class.hovering]="isHovering"
+  >
+    <p>Drag and drop files here or click to select</p>
+    <input
+      type="file"
+      (change)="onFileSelected($event)"
+      multiple
+      #fileInput
+      style="display: none"
+    />
+    <button (click)="fileInput.click()">Select Files</button>
+  </div>
+
+  <div *ngIf="files.length > 0" class="upload-queue">
+    <h3>Upload Queue ({{ files.length }} files)</h3>
+    <button (click)="uploadAllFiles()" [disabled]="files.length === 0" class="upload-all">Upload All</button>
+    <ul class="file-list">
+      <li *ngFor="let file of files" class="file-item">
+        <div class="file-info">
+          <span>{{ file.file.name }}</span>
+          <span class="file-size"
+          >({{ (file.file.size / 1024 / 1024).toFixed(2) }} MB)</span
+          >
+          <span
+            class="status-badge"
+            [ngClass]="{
+              'status-pending': file.status === 'pending',
+              'status-uploading': file.status === 'uploading',
+              'status-completed': file.status === 'completed',
+              'status-cancelled': file.status === 'cancelled',
+              'status-failed': file.status === 'failed'
+            }"
+          >{{ file.status | titlecase }}</span
+          >
+        </div>
+
+        <div *ngIf="file.status === 'uploading' && file.progress > 0">
+          <div class="progress-bar-container">
+            <div class="progress-bar" [style.width]="file.progress + '%'"></div>
+          </div>
+          <span class="progress-text">{{ file.progress }}%</span>
+        </div>
+
+        <div *ngIf="file.error" class="error-message">
+          Error: {{ file.error }}
+        </div>
+
+        <div class="file-actions">
+          <button
+            *ngIf="file.status === 'uploading' || file.status === 'pending'"
+            (click)="file.cancel && file.cancel()"
+            class="cancel-btn"
+          >
+            Cancel
+          </button>
+          <button
+            *ngIf="file.status === 'failed' || file.status === 'cancelled'"
+            (click)="retryUpload(file.id)"
+            class="retry-btn"
+          >
+            Retry
+          </button>
+          <button (click)="removeFile(file.id)" class="remove-btn">
+            Remove
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
