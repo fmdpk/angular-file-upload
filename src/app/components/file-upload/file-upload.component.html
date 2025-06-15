@@ -6,6 +6,7 @@
     (filesDropped)="onFilesDropped($event)"
     (filesHovered)="toggleHover($event)"
     [class.hovering]="isHovering"
+    (click)="fileInput.click()"
   >
     <p>Drag and drop files here or click to select</p>
     <input
@@ -15,7 +16,7 @@
       #fileInput
       style="display: none"
     />
-    <button (click)="fileInput.click()">Select Files</button>
+    <button (click)="$event.preventDefault();$event.stopPropagation();fileInput.click()">Select Files</button>
   </div>
 
   <div *ngIf="files.length > 0" class="upload-queue">
