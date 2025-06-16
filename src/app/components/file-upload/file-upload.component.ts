@@ -152,12 +152,12 @@ export class FileUploadComponent implements OnInit, OnDestroy {
 
   uploadAllFiles() {
     this.files.forEach((file) => {
-      // if (file.status === 'pending' || file.status === 'failed' || file.status === 'cancelled') {
-      //   this.uploadFile(file);
-      // }
-      if (file.status === 'failed' || file.status === 'cancelled') {
+      if (file.status === 'pending' || file.status === 'failed' || file.status === 'cancelled') {
         this.uploadFile(file);
       }
+      // if (file.status === 'failed' || file.status === 'cancelled') {
+      //   this.uploadFile(file);
+      // }
     });
   }
 
